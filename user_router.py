@@ -8,6 +8,12 @@ router = APIRouter()
 
 @router.post("/users/", response_model=UserSchema)
 async def create_user(user: UserCreate,db: Session = Depends(get_db)):
+    check_user = db.query(User).filter(User.name == user.name).first()
+    if check_user is not None:
+        raise HTTPException(status_code=404,
+                            detail='User already exists')
+
+
     db_user = User(name=user.name, email=user.email, password=user.password)
     db.add(db_user)
     db.commit()
