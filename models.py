@@ -1,3 +1,4 @@
+import uuid as uuid
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 
@@ -13,7 +14,6 @@ class User(Base):
     comments = relationship("Comment", back_populates="user")
 
 
-
 class Comment(Base):
     __tablename__ = "comments"
     id = Column(Integer, primary_key=True, index=True)
@@ -21,9 +21,11 @@ class Comment(Base):
     user_id = Column(Integer, ForeignKey("users.id"))
     user = relationship("User", back_populates="comments")
 
+
 class Comment_Image(Base):
     __tablename__ = 'image'
     id = Column(Integer, primary_key=True, index=True)
-    file_name = Column(String,unique=True,uuid=True)
+    file_name = Column(String, unique=True)
     file_path = Column(String)
-    comment_id = 
+    comment_id = Column(Integer, ForeignKey("comments.id"))
+    comment = relationship("Comment", back_populates="image_comments")
