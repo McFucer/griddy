@@ -1,17 +1,35 @@
 from fastapi import Depends, HTTPException, status, APIRouter
+from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from config import SECRET_KEY
 
 from jose import jwt, JWTError
 from jose.exceptions import ExpiredSignatureError
 from models import AdminModel
-from api.auth.admin_auth import oauth2_bearer, for_user_exception, get_user_exceptions
-
 from db import get_db
+
+oauth2_bearer = OAuth2PasswordBearer(tokenUrl="/admin/auth/token/")
+
+def for_user_exception():
+    credential_exceptions = HTTPException(
+        status_code=status.HTTP_409_CONFLICT,
+        detail="You are not admin ",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    return credential_exceptions
+
+def get_user_exceptions():
+    credential_exceptions = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    return credential_exceptions
+
 
 router = APIRouter()
 
-@router.post('')
+@router.post('dvsxvsxd')
 async def get_current_admin(token: str = Depends(oauth2_bearer),
                             db: Session = Depends(get_db)):
     try:
